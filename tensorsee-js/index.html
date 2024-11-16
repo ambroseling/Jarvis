@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sidebar Example</title>
+</head>
+
+<body>
+  <div class="sidebar">
+    <div id="tensor-info-container"></div>
+    <script>
+      // Establish WebSocket connection
+      const socket = new WebSocket("ws://localhost:8765");
+
+      socket.binaryType = "arraybuffer"; // Expect binary data
+
+      socket.onmessage = (event) => {
+        // Convert the binary data to a TypedArray
+        const buffer = event.data;
+        const floatArray = new Float32Array(buffer);
+
+        // Display the tensor data (for example, log it)
+        console.log("Received tensor:", floatArray);
+      };
+
+      socket.onopen = () => console.log("WebSocket connected");
+      socket.onclose = () => console.log("WebSocket disconnected");
+    </script>
+    <script type="module">
+      import { renderTensorInfo } from './tensor-info.js';
+      document.getElementById('tensor-info-container').innerHTML =
+        renderTensorInfo("tensor1", "10x10", "float32", "100MB");
+    </script>
+    <div style="
+      width: 80%;
+      margin: 10px auto;
+      padding: 10px;" class="title-container">
+      <h3>Runtime Tensors</h3>
+      <button id="create-tensor"
+        style="background-color: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 4px;">
+        <span style="font-size: 16px; margin-right: 5px;">+</span>
+        Create Tensor
+      </button>
+    </div>
+
+  </div>
+  <div id="app"></div>
+  <div class="zoom-buttons">
+    <button id="zoomIn">Zoom In</button>
+    <button id="zoomOut">Zoom Out</button>
+  </div>
+  <canvas class="three-js"></canvas>
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>

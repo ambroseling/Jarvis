@@ -1,0 +1,38 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background-color: white;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 1000;
+    width: 300px;
+    transition: width 0.3s ease-in-out;
+  }
+  
+  .sidebar.collapsed {
+    width: 50px;
+    padding: 0;
+    overflow: hidden;
+  }
+  
+  .sidebar-toggle {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .sidebar-toggle:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  
+  /* Ensure the main content shifts when sidebar expands */
+  .main-content {
+    margin-left: 50px;
+    transition: margin-left 0.3s ease-in-out;
+  }
+  
+  .main-content.sidebar-expanded {
+    margin-left: 300px;
+  }
