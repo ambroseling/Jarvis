@@ -20,7 +20,8 @@ function App() {
             <div style={{ width: '10px', display: 'inline-block' }}></div>
             <button id="zoomOut">Zoom Out</button>
           </div>
-          <CubeGrid />
+          {/* <CubeGrid /> */}
+          <FileReader/>
           </div>
         </Container>
       </div>

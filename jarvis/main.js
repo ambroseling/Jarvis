@@ -1,5 +1,6 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow,ipcMain } from 'electron';
 import path from 'path';
+import memoryMap from './memoryMap.js';
 import { fileURLToPath } from 'url';
 import isDev from 'electron-is-dev';
 
@@ -42,3 +43,15 @@ app.on('activate', () => {
         createWindow();
     }
 });
+
+ipcMain.handle('read-memory-map', async (event, filePath) => {
+    try {
+      const buffer = memoryMap.createMemoryMap(filePath);
+      // Convert to regular array/string as needed
+      const data = Buffer.from(buffer).toString();
+      return data;
+    } catch (error) {
+      console.error('Memory mapping failed:', error);
+      throw error;
+    }
+  });

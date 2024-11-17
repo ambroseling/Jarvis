@@ -1,29 +1,25 @@
-import asyncio
 import torch
-import websockets
-import pickle  # For serialization
+import mmap
+import numpy as np
+import os
 
-# Function to create a tensor (example)
-def create_tensor():
-    return torch.rand(3, 3)  # A 3x3 random tensor
+# Example: Create a tensor on CPU
+tensor = torch.rand((3, 3))
 
-# WebSocket handler
-async def send_tensor(websocket, path):
-    while True:
-        # Create a tensor
-        tensor = create_tensor()
+# Convert tensor to NumPy array
+tensor_np = tensor.numpy()
 
-        # Serialize the tensor using pickle
-        serialized_tensor = pickle.dumps(tensor)
+# Convert NumPy array to bytes (to store in memory-mapped file)
+tensor_bytes = tensor_np.tobytes()
 
-        # Send the serialized tensor to the client
-        await websocket.send(serialized_tensor)
+# Define a memory-mapped file path
+filename = 'tensor_mmap.dat'
 
-        # Wait before sending the next tensor
-        await asyncio.sleep(1)  # Adjust as needed
+# Create the memory-mapped file with the required size (size of tensor_bytes)
+with open(filename, 'wb') as f:
+    f.write(tensor_bytes)
 
-# Start WebSocket server
-start_server = websockets.serve(send_tensor, "localhost", 8765)
+# Memory-map the file (readonly access in this example)
+mmap_obj = mmap.mmap(os.open(filename, os.O_RDWR), len(tensor_bytes))
 
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+# Now `mmap_obj` contains the tensor data and can be accessed by other processes
